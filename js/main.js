@@ -8,7 +8,7 @@ $(document).ready(function(){
     var gridSet = {
         lineColor: '#FFFFFF',
         rowLineCount: 20,
-        columnLineCount: 30,
+        columnLineCount: 32,
         opacity: .5,
         lineDuration: 150
     };
