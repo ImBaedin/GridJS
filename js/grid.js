@@ -19,6 +19,16 @@ function GridCanvas(ctx, height, width, settings){
         this.settings.width = height;
         this.rowDistance = height/this.settings.rowLineCount;
         this.columnDistance = width/this.settings.columnLineCount;
+
+        this.drawnRows = 0;
+        this.drawnColumns = 0;
+        this.lines = [];
+    }
+    this.updateSettings = function(newSet){
+        this.settings = extend(this.settings, newSet);
+        this.drawnRows = 0;
+        this.drawnColumns = 0;
+        this.lines = [];
     }
     this.lastFrame;
     this.lastLine = 0;
