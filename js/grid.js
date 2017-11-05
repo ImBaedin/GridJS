@@ -239,5 +239,14 @@ EasingFunctions = {
     // decelerating to zero velocity
     easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
     // acceleration until halfway, then deceleration 
-    easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
-  }
+    easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t },
+    // elastic bounce effect at the beginning
+    easeInElastic: function (t) { return (.04 - .04 / t) * Math.sin(25 * t) + 1 },
+    // elastic bounce effect at the end
+    easeOutElastic: function (t) { return .04 * t / (--t) * Math.sin(25 * t) },
+    // elastic bounce effect at the beginning and end
+    easeInOutElastic: function (t) { return (t -= .5) < 0 ? (.01 + .01 / t) * Math.sin(50 * t) : (.02 - .01 / t) * Math.sin(50 * t) + 1 },
+    easeInSin: function (t) { return 1 + Math.sin(Math.PI / 2 * t - Math.PI / 2);},
+    easeOutSin : function (t) {return Math.sin(Math.PI / 2 * t);},
+    easeInOutSin: function (t) {return (1 + Math.sin(Math.PI * t - Math.PI / 2)) / 2;}
+}
