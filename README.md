@@ -4,7 +4,7 @@
 
 > Animated background grid element written in Javascript
 
-![Alt text](docs/images/thing.gif?raw=true "Optional Title")
+![Demo](docs/images/thing.gif?raw=true "Demo")
 
 # Installation
 
