@@ -7969,6 +7969,10 @@ pre {
   background-color: #f0ede4;
   padding-left: 30px;
 }
+
+.overflow-x-scroll {
+  overflow-x: scroll;
+}
  
 
  /*# sourceMappingURL= main.css.map */
