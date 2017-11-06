@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>GridJS</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <link rel="stylesheet" href="./css/main.css">
+    </head>
+    <body>
+        <div id="page-wrap">
+            <div id="header" class="container-fluid">
+                <canvas id="header-grid"></canvas>
+                <div id="header-content">
+                    <div id="header-title" class="font-weight-light">GridJS</div>
+                    <div class="row">
+                        <div class="col-lg-2 offset-lg-4  col-md-3 offset-md-3 text-center">
+                            <a href="https://github.com/ImBaedin/GridJS" target="_blank" class="button">
+                                View on GitHub
+                                <i class="fa fa-github"></i>
+                            </a>
+                        </div>
+                        <div class="col-lg-2 col-md-3 text-center">
+                            <a href="#" class="button">
+                                Download
+                                <i class="fa fa-download"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row justify-content-center" >
+                    <h1>Easily get started.</h1>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>HTML</h2>
+                        <pre>
+                            <code>
+&lt;body&gt;
+    ...
+    &lt;container&gt;
+        &lt;canvas id=&quot;yourGrid&quot;&gt;&lt;/canvas&gt;
+    &lt;/container&gt;
+    ...
+    &lt;script src=&quot;js/grid.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;</code>
+                        </pre>
+                    </div>
+                    <div class="col-md-6">
+                        <h2>Javascript</h2>
+                        <pre>
+                            <code>
+...
+var settings = {
+    lineColor: '#FFFFFF',
+    opacity: .3,
+    lineDuration: 150,
+    interval: 50
+}
+
+var canvas = document.getElementById('yourGrid');
+var ctx = canvas.getContext('2d');
+
+var height = canvas.clientHeight;
+var width = canvas.clientWidth;
+
+var grid = new GridCanvas(ctx, height, width, settings);
+grid.start();
+...</code>
+                            </pre>
+                    </div>
+                </div>
+                <hr>
+                <div class="row justify-content-center" >
+                    <h1>Settings</h1>
+                </div>
+                <hr>
+                <div class="row">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Setting</th>
+                                <th>Accepts</th>
+                                <th>Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>height</code></td>
+                                <td>Number (Any)</td>
+                                <td><code>null</code></td>
+                                <td>Height of the grid element.</td>
+                            </tr>
+                            <tr>
+                                <td><code>width</code></td>
+                                <td>Number (Any)</td>
+                                <td><code>null</code></td>
+                                <td>Width of the grid element.</td>
+                            </tr>
+                            <tr>
+                                <td><code>lineColor</code></td>
+                                <td>String (Form of '#******')</td>
+                                <td><code>'#FFFFFF'</code></td>
+                                <td>The color of the lines drawn.</td>
+                            </tr>
+                            <tr>
+                                <td><code>rowLineCount</code></td>
+                                <td>Number (Any)</td>
+                                <td><code>20</code></td>
+                                <td>Number of rows drawn.</td>
+                            </tr>
+                            <tr>
+                                <td><code>columnLineCount</code></td>
+                                <td>Number (Any)</td>
+                                <td><code>20</code></td>
+                                <td>Number of columns drawn.</td>
+                            </tr>
+                            <tr>
+                                <td><code>opacity</code></td>
+                                <td>Decimal (0-1)</td>
+                                <td><code>.7</code></td>
+                                <td>The opacity of the lines drawn.</td>
+                            </tr>
+                            <tr>
+                                <td><code>interval</code></td>
+                                <td>Number (Any)</td>
+                                <td><code>50</code></td>
+                                <td>Time between line creation. Should be in ms, but isn't currently.</td>
+                            </tr>
+                            <tr>
+                                <td><code>lineDuration</code></td>
+                                <td>Number (Any)</td>
+                                <td><code>1000</code></td>
+                                <td>How long the line takes to reach it's full length. Should be in ms, but isn't currently.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="row justify-content-center" >
+                    <h1>Functions</h1>
+                </div>
+                <hr>
+                <div class="row">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Arguments</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>.start()</code></td>
+                                <td><code>null</code></td>
+                                <td>Initializes the grid element.</td>
+                            </tr>
+                            <tr>
+                                <td><code>.stop()</code></td>
+                                <td><code>null</code></td>
+                                <td>Stops the grid element.</td>
+                            </tr>
+                            <tr>
+                                <td><code>.updateRes(height, width)</code></td>
+                                <td><code>height</code>:New Height <code>width</code>:New Width</td>
+                                <td>Changes the resolution of the grid.</td>
+                            </tr>
+                            <tr>
+                                <td><code>.updateSettings(newSettings)</code></td>
+                                <td><code>newSettings</code>:Object containing the new settings</td>
+                                <td>Changes the settings of the grid.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="row justify-content-center">
+                    <h1>Events</h1>
+                </div>
+                <hr>
+                <div class="row">
+                    <h2>None yet, stay tuned!</h2>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+        <script src="libs/fa/fontawesome.js"></script>
+        <script src="libs/fa/packs/light.js"></script>
+        <script src="libs/fa/packs/regular.js"></script>
+
+        <script src="js/grid.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>

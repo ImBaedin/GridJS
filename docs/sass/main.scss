@@ -1,0 +1,69 @@
+@import '../bootstrap/scss/bootstrap';
+//@import 'fa/scss/fontawesome-pro-core';
+@import 'res/reset';
+@import 'res/mixins';
+
+$text-main: #212529;
+$text-light: #eeeeee;
+
+#header {
+    height: 70vh;
+    width: 100%;
+    @include gradient-directional(45deg, #f53b3b, #513efd);
+    position: relative;
+    padding: 0;
+    border-bottom: 2px solid rgb(39, 39, 39);
+    overflow: hidden;
+}
+
+#header-content {
+    z-index: 100;
+    position: relative;
+}
+
+#header-grid {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 10;
+}
+
+#header-title {
+    color: white;
+    font-size: 25vw;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding-top: 75px;
+    @include media-breakpoint-up(md) {
+        font-size: 30vh;
+    }
+}
+
+.button{
+    color: $text-light;
+    background-color: transparent;
+    font-size: 26px;
+    padding: 10px;
+    display: inline-block;
+    @include easeInCubic(75ms);
+    &:hover{
+        color: $text-main;
+        background-color: white;
+        text-decoration: none;
+    }
+    &:active{
+
+    }
+    &:visited{
+        
+    }
+}
+
+pre{
+    background-color: rgb(240, 237, 228);
+    padding-left: 30px;
+    code{
+        //background-color: rgb(218, 215, 206);
+    }
+}

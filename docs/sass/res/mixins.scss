@@ -1,0 +1,25 @@
+@mixin gradient-directional($deg: 45deg, $start-color: #555, $end-color: #333) {
+    background-repeat: repeat-x;
+    background-image: -webkit-linear-gradient($deg, $start-color, $end-color); // Safari 5.1-6, Chrome 10+
+    background-image: -o-linear-gradient($deg, $start-color, $end-color); // Opera 12
+    background-image: linear-gradient($deg, $start-color, $end-color); // Standard, IE10, Firefox 16+, Opera 12.10+, Safari 7+, Chrome 26+
+}
+
+@mixin border-radius($radius) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    -ms-border-radius: $radius;
+    -o-border-radius: $radius;
+    border-radius: $radius;
+}
+
+@mixin genShadow($hlength: 3px, $vlength: 3px, $blur: 10px, $spread: 0px, $color: rgba(75,74,82,1)){
+    -webkit-box-shadow: $hlength $vlength $blur $spread $color;
+	-moz-box-shadow: $hlength $vlength $blur $spread $color;
+	box-shadow: $hlength $vlength $blur $spread $color;
+}
+
+@mixin easeInCubic($length: 600ms){
+    -webkit-transition: all $length cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    transition: all $length cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
