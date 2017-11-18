@@ -1,5 +1,32 @@
-function GridCanvas(ctx, height, width, settings){
-    this.ctx = ctx;
+//var onGridResize = new Event('onGridResize');
+
+var events = {
+    ON_GRID_ANIMATION_FINISH: 'gridjs.onAnimationFinish',
+    ON_GRID_RESIZE: 'gridjs.onGridResize'
+};
+
+function GridCanvas(canvas, height, width, settings){
+    this.triggerEvent = function(el, eventName, data){
+        el.dispatchEvent(new CustomEvent(eventName, {detail: data}));
+    }
+
+    if(canvas && height && width){
+        this.ctx = canvas.getContext('2d');
+        this.element = document.createElement('div');
+    }
+    else{
+        console.log('Incorrect GridJS configuration');
+        this.start = function(){};
+        return;
+    }
+
+    this.onAnimationFinish = function(callback){
+        this.element.addEventListener(events.ON_GRID_ANIMATION_FINISH, callback, false);
+    }
+    this.onGridResize = function(callback){
+        this.element.addEventListener(events.ON_GRID_RESIZE, callback, false);
+    }
+
     this.height = height;
     this.width = width;
     this.settings = extend({
@@ -8,21 +35,34 @@ function GridCanvas(ctx, height, width, settings){
         columnLineCount: 20,
         opacity: .7,
         interval: 50,
+        //lineDuration: 2000,
         lineDuration: 1000,
         height: height,
-        width: width
+        width: width,
+        fillParent: true,
+        animateOnRedraw: false,
+        gridAsSquares: true,
+        gridSquareSize: 75
     }, settings);
     this.updateRes = function(height, width){
         this.height = height;
         this.width = width;
         this.settings.height = height;
         this.settings.width = width;
+
+        if(this.settings.gridAsSquares){
+            this.settings.rowLineCount = Math.ceil(height/this.settings.gridSquareSize);
+            this.settings.columnLineCount = Math.ceil(width/this.settings.gridSquareSize);
+        }
+
         this.rowDistance = height/this.settings.rowLineCount;
         this.columnDistance = width/this.settings.columnLineCount;
-
         this.drawnRows = 0;
         this.drawnColumns = 0;
         this.lines = [];
+        this.animating = true;
+
+        this.triggerEvent(this.element, events.ON_GRID_RESIZE);
     }
     this.updateSettings = function(newSet){
         this.settings = extend(this.settings, newSet);
@@ -32,6 +72,7 @@ function GridCanvas(ctx, height, width, settings){
         this.drawnRows = 0;
         this.drawnColumns = 0;
         this.lines = [];
+        this.animating = true;
     }
     this.lastFrame;
     this.lastLine = 0;
@@ -39,9 +80,11 @@ function GridCanvas(ctx, height, width, settings){
     this.drawnRows = 0;
     this.drawnColumns = 0;
     this.lines = [];
+    this.animating = true;
     this.rowDistance = height/this.settings.rowLineCount;
     this.columnDistance = width/this.settings.columnLineCount;
     this.line = function(type, num){
+
         var ls = {};
         var opac = this.settings.opacity;
         ls.colors = hexToRgb(this.settings.lineColor);
@@ -50,6 +93,9 @@ function GridCanvas(ctx, height, width, settings){
         ls.y = 0;
         ls.finalWidth = 0;
         ls.finalHeight = 0;
+        if(this.loaded){
+            ls.reDrawn = true;
+        }
         ls.settings = this.settings;
         ls.type = type;
 
@@ -76,7 +122,17 @@ function GridCanvas(ctx, height, width, settings){
         this.ctx.clearRect(0, 0, this.width, this.height);
         //console.log('clear');
 
-        if(this.lastLine+this.settings.interval <= this.lastFrame){
+        if(this.loaded && !this.settings.animateOnRedraw){
+            for(i=0;i<this.settings.rowLineCount;i++){
+                this.line('row', this.drawnRows+1);
+                this.drawnRows++;
+            }
+            for(i=0;i<this.settings.columnLineCount;i++){
+                this.line('column', this.drawnColumns+1);
+                this.drawnColumns++;
+            }
+        }
+        else if(this.lastLine+this.settings.interval <= this.lastFrame){
             if(this.drawnRows < this.settings.rowLineCount){
                 this.line('row', this.drawnRows+1);
                 this.drawnRows++;
@@ -89,11 +145,19 @@ function GridCanvas(ctx, height, width, settings){
         }
 
         for(var i = 0; i<this.lines.length; i++){
-
             this.lines[i].update();
             //console.log(i);
-            if(this.lines[i].iteration >= this.settings.lineDuration){
+
+            // if(this.lines[i].iteration >= this.settings.lineDuration){
+            //     this.lines[i].finished = true;
+            // }
+            
+            if(Date.now()-this.lines[i].began >= this.settings.lineDuration){
                 this.lines[i].finished = true;
+                if(i == this.lines.length-1 && this.animating == true){
+                    this.animating = false;
+                    this.triggerEvent(this.element, events.ON_GRID_ANIMATION_FINISH);
+                }
             }
         }
 
@@ -102,10 +166,37 @@ function GridCanvas(ctx, height, width, settings){
         this.lastFrame = Date.now();
     }
     this.start = function(){
+        var _this = this;
         this.animate();
+        this.bindResize();
+        this.onResize();
+        setTimeout(function(){
+            _this.loaded = true;
+        }, 2000);
     };
     this.stop = function(){
         this.stopped = true;
+        this.bindResize(false);
+    }
+    this.bindResize = function(action = true){
+        var _this = this;
+        if(!action){
+            //return;
+        }
+        window.onresize = function(event) {
+            _this.onResize(event);
+        }
+    }
+    this.onResize = function(event){
+        var pHeight = canvas.parentElement.clientHeight;
+        var pWidth = canvas.parentElement.clientWidth;
+        canvas.height = pHeight;
+        canvas.width = pWidth;
+        var cHeight = canvas.clientHeight;
+        var cWidth = canvas.clientWidth;
+        if(this.settings.fillParent){
+            this.updateRes(cHeight, cWidth);
+        }
     }
 }
 
@@ -121,6 +212,7 @@ window.addEventListener('mousemove', function(e) {
 });
 
 function Line(settings) {
+    this.reDrawn = settings.reDrawn;
     this.x = settings.x;
     this.y = settings.y;
     this.finalHeight = settings.finalHeight;
@@ -132,7 +224,8 @@ function Line(settings) {
     this.alpha = settings.alpha;
     this.c = settings.c;
     this.finished = false;
-    this.iteration = 0;
+    this.began = settings.began || Date.now();
+    //this.iteration = 0;
     this.type = settings.type;
 
 	this.draw = function() {
@@ -145,17 +238,57 @@ function Line(settings) {
         
 		this.c.strokeStyle = stroke;
         this.c.stroke();
-        if(!this.finished){
-            this.iteration++;
-        }
+        // if(!this.finished){
+        //     this.iteration++;
+        // }
 	}
 
 	this.update = function() {
+
+        // if(this.type == 'row'){
+        //     this.x2 = this.finalWidth*EasingFunctions.easeInOutCubic(this.iteration/this.settings.lineDuration);
+        // }
+        // else{
+        //     this.y2 = this.finalHeight*EasingFunctions.easeInOutCubic(this.iteration/this.settings.lineDuration);
+        // }
+
+        var now = Date.now();
+        var began = this.began;
+        var curTime = now-began;
+        
         if(this.type == 'row'){
-            this.x2 = this.finalWidth*EasingFunctions.easeInOutCubic(this.iteration/this.settings.lineDuration);
+            if(this.finished || (this.reDrawn && !this.settings.animateOnRedraw)){
+                this.x2 = this.finalWidth;
+            }
+            else{
+                this.x2 = this.finalWidth*EasingFunctions.easeInOutCubic(curTime/this.settings.lineDuration);
+            }
+
+            // if(!this.finished || (!this.reDrawn && this.settings.animateOnRedraw)){
+            //     // console.log('now: ' +now);
+            //     // console.log('beg: ' +began);
+            //     // console.log('curTime: ' +curTime);
+            //     // console.log('lineDuration: ' +this.settings.lineDuration);
+            //     this.x2 = this.finalWidth*EasingFunctions.easeInOutCubic(curTime/this.settings.lineDuration);
+            // }
+            // else{
+            //     this.x2 = this.finalWidth;
+            // }
         }
         else{
-            this.y2 = this.finalHeight*EasingFunctions.easeInOutCubic(this.iteration/this.settings.lineDuration);
+            if(this.finished || (this.reDrawn && !this.settings.animateOnRedraw)){
+                this.y2 = this.finalHeight;
+            }
+            else{
+                this.y2 = this.finalHeight*EasingFunctions.easeInOutCubic(curTime/this.settings.lineDuration);
+            }
+
+            // if(!this.finished || (!this.reDrawn && this.settings.animateOnRedraw)){
+            //     this.y2 = this.finalHeight*EasingFunctions.easeInOutCubic(curTime/this.settings.lineDuration);
+            // }
+            // else{
+            //     this.y2 = this.finalHeight;
+            // }
         }
 
 		this.draw();
